@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}CSV診斷工具{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="bi bi-bug"></i> CSV檔案診斷工具</h1>
+    
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>錯誤:</strong> {{ error }}
+    </div>
+    {% endif %}
+    
+    {% if result %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>診斷結果</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>總行數:</strong> {{ result.lines }}</p>
+            <p><strong>原始內容（前1000字符）:</strong></p>
+            <pre class="bg-light p-3">{{ result.original_content }}</pre>
+            
+            <p><strong>前10行:</strong></p>
+            <div class="bg-light p-3">
+                {% for line in result.first_few_lines %}
+                <div>行 {{ loop.index }}: <code>{{ line }}</code></div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>上傳CSV檔案進行診斷</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <input type="file" class="form-control" name="csv_file" accept=".csv,.txt" required>
+                </div>
+                <button type="submit" class="btn btn-primary">診斷</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
