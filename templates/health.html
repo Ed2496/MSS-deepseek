@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}系統健康{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="bi bi-heart-pulse"></i> 系統健康檢查</h1>
+    
+    <div class="card mt-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>組件</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for component, status in status.items() %}
+                        <tr>
+                            <td>{{ component }}</td>
+                            <td>
+                                {% if status %}
+                                <span class="badge bg-success">正常</span>
+                                {% else %}
+                                <span class="badge bg-danger">異常</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

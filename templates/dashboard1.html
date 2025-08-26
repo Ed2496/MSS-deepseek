@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}儀表板{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- 統計卡片 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-4">
+                <i class="bi bi-speedometer2 text-primary"></i> 系統儀表板
+            </h1>
+        </div>
+        
+        <!-- 統計卡片保持不變 -->
+        <!-- ... -->
+    </div>
+
+    <!-- 最近會議 -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-clock-history text-primary"></i> 最近會議
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if analyses %}
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table table-sm">
+                            <colgroup>
+                                <col style="width: 45%">
+                                <col style="width: 20%">
+                                <col style="width: 20%">
+                                <col style="width: 15%">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>會議名稱</th>
+                                    <th>日期</th>
+                                    <th>分析方式</th>
+                                    <th>行動項目</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for analysis in analyses[-10:] %}
+                                <tr>
+                                    <td>
+                                        <!-- 直接使用會議名稱 -->
+                                        <strong>{{ analysis.metadata.topic|default('未命名會議', true)|truncate(40) }}</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ analysis.metadata.date|default('未知日期', true) }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ analysis.analysis_method|default('未知', true) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            {{ analysis.action_items|length if analysis.action_items else 0 }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="bi bi-inbox display-4"></i>
+                        <p class="mt-2">尚無會議資料</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table th:nth-child(1),
+.table td:nth-child(1) {
+    width: 45% !important;
+    max-width: 45% !important;
+}
+.table th:nth-child(2),
+.table td:nth-child(2) {
+    width: 20% !important;
+    max-width: 20% !important;
+}
+.table th:nth-child(3),
+.table td:nth-child(3) {
+    width: 20% !important;
+    max-width: 20% !important;
+}
+.table th:nth-child(4),
+.table td:nth-child(4) {
+    width: 15% !important;
+    max-width: 15% !important;
+}
+</style>
+{% endblock %}

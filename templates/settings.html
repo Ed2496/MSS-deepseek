@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}系統設定{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="bi bi-gear"></i> 系統設定</h1>
+    
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+    
+    {% if success %}
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> {{ success }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>DeepSeek API 設定</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">系統名稱</label>
+                    <input type="text" class="form-control" name="system_name" value="{{ config.system_name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">API URL</label>
+                    <input type="url" class="form-control" name="ai_url" value="{{ config.ai_url }}" required>
+                    <div class="form-text">DeepSeek API端點URL</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">AI模型</label>
+                    <input type="text" class="form-control" name="ai_model" value="{{ config.ai_model }}" required>
+                    <div class="form-text">例如: deepseek-chat</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">API金鑰</label>
+                    <input type="password" class="form-control" name="ai_api_key" value="{{ config.ai_api_key }}" required>
+                    <div class="form-text">您的DeepSeek API金鑰</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">分析提示詞</label>
+                    <textarea class="form-control" name="prompt" rows="6" required>{{ config.prompt }}</textarea>
+                    <div class="form-text">給AI的指令，指導如何分析會議內容</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> 儲存設定並測試API連線
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

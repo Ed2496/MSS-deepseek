@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}會議紀錄{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-journal-text text-primary"></i> 會議紀錄
+            </h1>
+            <hr>
+        </div>
+    </div>
+
+    {% if analyses %}
+    <div class="row">
+        {% for analysis in analyses %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">
+                    <h5 class="card-title mb-0">{{ analysis.metadata.topic|default('未命名會議', true) }}</h5>
+                    <small class="text-muted">
+                        {{ analysis.metadata.date|default('未知日期', true) }} 
+                        {{ analysis.metadata.time|default('', true) }}
+                        <span class="badge bg-secondary ms-2">{{ analysis.analysis_method|default('未知', true) }}</span>
+                    </small>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-primary">會議摘要：</h6>
+                    {% if analysis.summary and analysis.summary|length > 0 %}
+                    <ul class="list-unstyled">
+                        {% for point in analysis.summary %}
+                        <li class="mb-1"><i class="bi bi-check-circle text-success"></i> {{ point }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">無會議摘要</p>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between mt-3">
+                        <span class="badge bg-info">行動項目: {{ analysis.action_items|length if analysis.action_items else 0 }}</span>
+                        <span class="badge bg-warning">客戶抱怨: {{ analysis.complaints|length if analysis.complaints else 0 }}</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-light">
+                    <small class="text-muted">檔案: {{ analysis.metadata.filename|default('未知檔案', true) }}</small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="bi bi-journal-text display-4 text-muted"></i>
+                <h3 class="text-muted mt-3">尚無會議紀錄</h3>
+                <p class="text-muted">請先上傳會議檔案並進行分析</p>
+                <a href="{{ url_for('upload_files') }}" class="btn btn-primary mt-2">
+                    <i class="bi bi-cloud-upload"></i> 開始上傳會議檔案
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

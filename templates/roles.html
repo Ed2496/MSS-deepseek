@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}角色管理{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h1 class="h3 mb-0">
+                <i class="bi bi-people-fill text-primary"></i> 角色管理
+            </h1>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row" style="height: calc(25vh - 100px); min-height: 250px;">
+        <!-- 新增角色區塊 - 佔1/4高度 -->
+        <div class="col-12 h-100">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-person-plus"></i> 新增角色
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show mb-3">
+                        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+                    
+                    {% if success %}
+                    <div class="alert alert-success alert-dismissible fade show mb-3">
+                        <i class="bi bi-check-circle"></i> {{ success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" id="roleForm">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">公司名稱</label>
+                                <input type="text" class="form-control" name="company" placeholder="輸入公司名稱" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">人員姓名</label>
+                                <input type="text" class="form-control" name="name" placeholder="輸入人員姓名" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">職稱</label>
+                                <input type="text" class="form-control" name="title" placeholder="輸入職稱" required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-8">
+                                <label class="form-label">或上傳CSV檔案</label>
+                                <input type="file" class="form-control" name="csv_file" accept=".csv,.txt">
+                                <div class="form-text">CSV格式：公司,姓名,職稱（UTF-8編碼）</div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-save"></i> 儲存角色
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4" style="height: calc(75vh - 200px); min-height: 400px;">
+        <!-- 現有角色區塊 - 佔3/4高度 -->
+        <div class="col-12 h-100">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="bi bi-people"></i> 現有角色
+                        <span class="badge bg-light text-dark ms-2">{{ roles|length }} 筆</span>
+                    </h5>
+                    <div>
+                        <span class="badge bg-info">公司: {{ company_count }}</span>
+                        <span class="badge bg-warning ms-2">人員: {{ roles|length }}</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if roles %}
+                    <div class="table-container h-100">
+                        <table class="table table-hover compact-table mb-0">
+                            <thead class="table-success sticky-top">
+                                <tr>
+                                    <th width="25%">公司</th>
+                                    <th width="25%">姓名</th>
+                                    <th width="35%">職稱</th>
+                                    <th width="15%" class="text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for role in roles %}
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" 
+                                               name="company_{{ loop.index0 }}" 
+                                               value="{{ role.company }}" 
+                                               form="editForm">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" 
+                                               name="name_{{ loop.index0 }}" 
+                                               value="{{ role.name }}" 
+                                               form="editForm">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" 
+                                               name="title_{{ loop.index0 }}" 
+                                               value="{{ role.title }}" 
+                                               form="editForm">
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="submit" class="btn btn-outline-primary" 
+                                                    form="editForm" name="save_index" value="{{ loop.index0 }}">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button type="submit" class="btn btn-outline-danger" 
+                                                    form="deleteForm" name="delete_index" value="{{ loop.index0 }}"
+                                                    onclick="return confirm('確定要刪除這個角色嗎？')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-people display-4"></i>
+                        <h5 class="mt-3">尚無角色資料</h5>
+                        <p>請新增角色或上傳CSV檔案</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if roles %}
+                <div class="card-footer bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">點擊編輯框修改內容，點擊✓保存，點擊🗑️刪除</small>
+                        <button type="submit" class="btn btn-success btn-sm" form="editForm" name="save_all" value="true">
+                            <i class="bi bi-save-all"></i> 全部保存
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 編輯表單 -->
+<form id="editForm" method="POST" action="{{ url_for('manage_roles') }}">
+    <input type="hidden" name="form_type" value="edit">
+    {% for role in roles %}
+    <input type="hidden" name="original_company_{{ loop.index0 }}" value="{{ role.company }}">
+    <input type="hidden" name="original_name_{{ loop.index0 }}" value="{{ role.name }}">
+    <input type="hidden" name="original_title_{{ loop.index0 }}" value="{{ role.title }}">
+    {% endfor %}
+</form>
+
+<!-- 刪除表單 -->
+<form id="deleteForm" method="POST" action="{{ url_for('manage_roles') }}">
+    <input type="hidden" name="form_type" value="delete">
+</form>
+
+<style>
+.table-container {
+    overflow-y: auto;
+}
+.compact-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.compact-table input {
+    border: 1px solid #dee2e6;
+    padding: 0.25rem 0.5rem;
+}
+.compact-table input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 自動聚焦到第一個輸入框
+    const firstInput = document.querySelector('input[type="text"]');
+    if (firstInput) firstInput.focus();
+    
+    // 表單提交確認
+    const deleteForm = document.getElementById('deleteForm');
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function(e) {
+            if (!confirm('確定要刪除這個角色嗎？此操作無法復原！')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,20 @@
+.analysis-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.analysis-card:hover {
+    transform: translateY(-2px);
+}
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+.status-active {
+    background-color: #28a745;
+}
+.status-inactive {
+    background-color: #dc3545;
+}

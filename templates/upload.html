@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}檔案上傳{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="bi bi-cloud-upload"></i> 會議檔案上傳</h1>
+    
+    <div class="card mt-4">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">選擇會議檔案（TXT格式）</label>
+                    <input type="file" class="form-control" name="files" multiple accept=".txt" required>
+                    <div class="form-text">支援多檔案上傳，檔案名稱應包含日期時間主旨（如：20231201_143000_產品會議.txt）</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">分析方式</label>
+                    <select class="form-select" name="analysis_method">
+                        <option value="local">本地模型分析</option>
+                        <option value="deepseek">DeepSeek API分析</option>
+                    </select>
+                    <div class="form-text">本地分析即時快速，DeepSeek分析需要API金鑰</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-upload"></i> 上傳並分析
+                </button>
+                
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary ms-2">
+                    <i class="bi bi-arrow-left"></i> 返回儀表板
+                </a>
+            </form>
+        </div>
+    </div>
+
+    {% if uploaded_files %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5>已上傳檔案</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>檔案名稱</th>
+                            <th>上傳時間</th>
+                            <th>分析狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in uploaded_files %}
+                        <tr>
+                            <td>{{ file.filename }}</td>
+                            <td>{{ file.upload_time }}</td>
+                            <td>
+                                {% if file.analyzed %}
+                                <span class="badge bg-success">已分析</span>
+                                {% else %}
+                                <span class="badge bg-warning">待分析</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

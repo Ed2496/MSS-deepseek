@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會議分析系統 - {% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* 固定導航欄 */
+        .navbar-fixed {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* 內容區域 padding */
+        .content-wrapper {
+            padding-top: 80px; /* 導航欄高度 */
+            min-height: 100vh;
+        }
+        
+        /* 表格優化 */
+        .compact-table {
+            font-size: 0.9rem;
+        }
+        .compact-table th {
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 80px; /* 導航欄下方 */
+            z-index: 100;
+        }
+        .compact-table td {
+            padding: 0.5rem;
+            vertical-align: middle;
+        }
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        /* 進度條優化 */
+        .progress {
+            height: 20px;
+        }
+        .progress-bar {
+            font-size: 0.75rem;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 固定藍色導航欄 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary navbar-fixed">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">
+                <i class="bi bi-chat-dots-fill"></i> 會議分析系統
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="bi bi-speedometer2"></i> 儀表板
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('upload_files') }}">
+                            <i class="bi bi-cloud-upload"></i> 上傳
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('meeting_records') }}">
+                            <i class="bi bi-journal-text"></i> 會議紀錄
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('action_items') }}">
+                            <i class="bi bi-list-task"></i> 工作事項
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('customer_complaints') }}">
+                            <i class="bi bi-chat-dots"></i> 客戶抱怨
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('manager_analysis') }}">
+                            <i class="bi bi-graph-up"></i> 主管分析
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('manage_roles') }}">
+                            <i class="bi bi-people"></i> 角色管理
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('system_settings') }}">
+                            <i class="bi bi-gear"></i> 設定
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <div class="content-wrapper">
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

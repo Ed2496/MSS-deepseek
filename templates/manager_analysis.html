@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}主管分析{% endblock %}
+{% block content %}
+<div class="container">
+    <h1><i class="bi bi-graph-up"></i> 主管分析</h1>
+    
+    {% if analyses %}
+    <div class="row mt-4">
+        {% for analysis in analyses %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ analysis.metadata.topic if analysis.metadata and analysis.metadata.topic else '未命名會議' }}</h5>
+                    <small class="text-muted">
+                        {{ analysis.metadata.date if analysis.metadata and analysis.metadata.date else '未知日期' }}
+                        <span class="badge bg-secondary ms-2">{{ analysis.analysis_method if analysis.analysis_method else '未知' }}</span>
+                    </small>
+                </div>
+                <div class="card-body">
+                    {# 安全地訪問 gt_analysis #}
+                    {% set gt_data = analysis.gt_analysis if analysis.gt_analysis is defined else {} %}
+                    
+                    {# 安全地獲取各個分數 #}
+                    {% set performance = gt_data.get('performance', gt_data.get('performance_score', 0)) %}
+                    {% set shield = gt_data.get('shield', gt_data.get('shield_score', 0)) %}
+                    {% set wash = gt_data.get('wash', gt_data.get('wash_score', 0)) %}
+                    {% set delay = gt_data.get('delay', gt_data.get('delay_score', 0)) %}
+                    
+                    {# 只有當有數據時才顯示 #}
+                    {% if performance > 0 or shield > 0 or wash > 0 or delay > 0 %}
+                    <h6>Grassroots Tragedy 分析：</h6>
+                    <div class="mb-3">
+                        <small class="text-muted">表演維度</small>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-info" style="width: {{ (performance * 10) | round }}%">
+                                表演: {{ performance | round(1) }}
+                            </div>
+                        </div>
+                        
+                        <small class="text-muted">擋箭牌維度</small>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-warning" style="width: {{ (shield * 10) | round }}%">
+                                擋箭牌: {{ shield | round(1) }}
+                            </div>
+                        </div>
+                        
+                        <small class="text-muted">洗牌維度</small>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: {{ (wash * 10) | round }}%">
+                                洗牌: {{ wash | round(1) }}
+                            </div>
+                        </div>
+                        
+                        <small class="text-muted">推拖維度</small>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-danger" style="width: {{ (delay * 10) | round }}%">
+                                推拖: {{ delay | round(1) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i> 無Grassroots Tragedy分析數據
+                    </div>
+                    {% endif %}
+                    
+                    {# 主管分析 #}
+                    {% set manager_data = analysis.manager_analysis if analysis.manager_analysis is defined else {} %}
+                    {% if manager_data and manager_data is mapping and manager_data|length > 0 %}
+                    <h6>主管職責分析：</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>主管</th>
+                                    <th>完成度</th>
+                                    <th>進度條</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for manager_name, score in manager_data.items() %}
+                                {% if score is number %}
+                                <tr>
+                                    <td>{{ manager_name }}</td>
+                                    <td>{{ score | round(1) }}/10</td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar 
+                                                {% if score >= 8 %}bg-success
+                                                {% elif score >= 5 %}bg-warning
+                                                {% else %}bg-danger
+                                                {% endif %}" 
+                                                style="width: {{ (score * 10) | round }}%">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> 無主管分析數據
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-4">
+        <i class="bi bi-info-circle"></i> 尚無主管分析資料。
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
